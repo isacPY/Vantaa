@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VANTA — Form, fit from within.</title>
+    <script>
+      // GitHub Pages 404 fallback (belt and braces — routing is hash-based,
+      // so this should rarely fire). Preserve the requested path as a hash
+      // route: /Vantaa/product/verge-10 -> /Vantaa/#/product/verge-10
+      (function () {
+        var base = '/Vantaa/';
+        var path = window.location.pathname.replace(/^\/Vantaa\/?/, '');
+        var route = path ? '#/' + path : '#/';
+        window.location.replace(base + route + window.location.search);
+      })();
+    </script>
+  </head>
+  <body style="background:#0b0b0c;color:#f2ede3;font-family:sans-serif;text-align:center;padding:3rem 1rem;">
+    <p>Redirecting to VANTA…</p>
+    <p><a href="/Vantaa/#/" style="color:#ff6a1a;">Go to the collection</a></p>
+  </body>
+</html>
