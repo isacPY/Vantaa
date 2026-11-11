@@ -25,12 +25,18 @@ function ShelfShoe({ product, index, eager }) {
       className="showcase-cell group relative block w-full text-left focus-visible:outline-none"
       aria-label={`View ${product.code} — ${product.colour}. ${product.description}`}
     >
-      {/* Spotlight cone falling from above. */}
+      {/* Pool of light on the wall behind the shoe. */}
+      <span
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(62% 55% at 50% 36%, rgba(242,237,227,0.14) 0%, transparent 72%)' }}
+        aria-hidden="true"
+      />
+      {/* Spotlight cone falling from above — bright enough to read. */}
       <span
         className="absolute inset-x-0 top-0 bottom-8 pointer-events-none"
         style={{
-          background: 'linear-gradient(180deg, rgba(242,237,227,0.13) 0%, rgba(242,237,227,0.04) 55%, transparent 100%)',
-          clipPath: 'polygon(32% 0, 68% 0, 100% 100%, 0 100%)',
+          background: 'linear-gradient(180deg, rgba(242,237,227,0.34) 0%, rgba(242,237,227,0.12) 45%, transparent 82%)',
+          clipPath: 'polygon(26% 0, 74% 0, 100% 100%, 0 100%)',
         }}
         aria-hidden="true"
       />
@@ -45,8 +51,16 @@ function ShelfShoe({ product, index, eager }) {
         <span className="shoe-glow absolute left-1/2 bottom-0 -translate-x-1/2 w-[75%] h-[32%]" aria-hidden="true" />
         <span className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink/60 to-transparent" aria-hidden="true" />
       </span>
-      {/* The glass shelf the shoe sits on. */}
-      <span className="relative block mx-auto w-[88%] h-[2px] bg-white/40 shadow-[0_10px_24px_rgba(0,0,0,0.9)]" aria-hidden="true" />
+      {/* The glass shelf the shoe sits on — a ledge with a bright top
+          edge, a translucent body and a drop shadow, like the video. */}
+      <span
+        className="relative block mx-auto w-[88%] h-[7px] rounded-[1px]"
+        style={{
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.28) 22%, rgba(255,255,255,0.07) 100%)',
+          boxShadow: '0 14px 26px rgba(0,0,0,0.85), 0 2px 6px rgba(0,0,0,0.6)',
+        }}
+        aria-hidden="true"
+      />
       <span className="sr-only">{product.code}</span>
     </button>
   );
