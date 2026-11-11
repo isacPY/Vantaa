@@ -131,7 +131,7 @@ export default function ProductPage({ slug }) {
             className="flex h-full will-change-transform"
             style={{
               transform: `translateX(${trackX}px)`,
-              transition: reduced ? 'none' : 'transform 0.7s cubic-bezier(0.65, 0, 0.35, 1)',
+              transition: reduced ? 'none' : 'transform 0.9s cubic-bezier(0.45, 0, 0.55, 1)',
             }}
           >
             {slides.map((p, i) => {
@@ -160,23 +160,36 @@ export default function ProductPage({ slug }) {
                     style={{ opacity: active ? 0 : 0.55 }}
                     aria-hidden="true"
                   />
+                  <span className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink/70 to-transparent pointer-events-none" aria-hidden="true" />
                   {active && (
                     <>
-                      {/* The glowing orange platform the shoe stands on. */}
+                      {/* The glowing orange platform the shoe stands on.
+                          Painted after the bottom gradient so the gradient
+                          never dims it — it must read on light photos too. */}
                       <span
-                        className="absolute left-1/2 bottom-[2%] -translate-x-1/2 w-[85%] h-[34%] rounded-full pointer-events-none"
-                        style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.85) 0%, rgba(255,106,26,0.35) 55%, transparent 100%)' }}
+                        className="absolute left-1/2 bottom-[1%] -translate-x-1/2 w-[100%] h-[24%] rounded-full pointer-events-none"
+                        style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.4) 0%, transparent 70%)' }}
                         aria-hidden="true"
                       />
-                      <span className="absolute left-1/2 bottom-[6%] -translate-x-1/2 w-[62%] h-[3px] bg-accent/90 blur-[1px] pointer-events-none" aria-hidden="true" />
+                      <span
+                        className="absolute left-1/2 bottom-[2%] -translate-x-1/2 w-[90%] h-[36%] rounded-full pointer-events-none"
+                        style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.95) 0%, rgba(255,106,26,0.45) 55%, transparent 100%)' }}
+                        aria-hidden="true"
+                      />
+                      <span className="absolute left-1/2 bottom-[6%] -translate-x-1/2 w-[62%] h-[3px] bg-accent blur-[1px] pointer-events-none" aria-hidden="true" />
                     </>
                   )}
-                  <span className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink/70 to-transparent pointer-events-none" aria-hidden="true" />
                 </button>
               );
             })}
           </div>
 
+          {/* Dark scrim so the white title reads on light photos too. */}
+          <span
+            className="absolute inset-x-0 top-0 h-44 md:h-56 z-[5] pointer-events-none"
+            style={{ background: 'linear-gradient(180deg, rgba(11,11,12,0.88) 0%, rgba(11,11,12,0.5) 55%, transparent 100%)' }}
+            aria-hidden="true"
+          />
           {/* Title over the stage, top-left — like the video. */}
           <div className="absolute top-5 left-5 md:top-8 md:left-8 z-10 pointer-events-none">
             <p className="eyebrow text-accent mb-2">Series 01 — {product.colour}</p>
