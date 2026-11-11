@@ -46,6 +46,7 @@ export function ShoeCard({ product, index, eager }) {
 
 export default function ProductGrid() {
   const gridRef = useRef(null);
+  const innerRef = useRef(null);
 
   useEffect(() => {
     const root = gridRef.current;
@@ -64,6 +65,12 @@ export default function ProductGrid() {
           scrollTrigger: { trigger: el, start: 'top 88%', once: true },
         });
       });
+      // Slow pan/zoom drift across the collection, like the video's
+      // slow camera move over the grid — transform only, very subtle.
+      const inner = innerRef.current;
+      if (inner) {
+        gsap.to(inner, { scale: 1.035, duration: 16, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+      }
     }, root);
     return () => ctx.revert();
   }, []);
@@ -80,7 +87,7 @@ export default function ProductGrid() {
         <p className="eyebrow text-cream-dim text-right hidden sm:block">10 silhouettes</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-x-4 gap-y-8 md:gap-x-5 md:gap-y-10">
+      <div ref={innerRef} className="grid grid-cols-2 md:grid-cols-5 gap-x-4 gap-y-8 md:gap-x-5 md:gap-y-10 will-change-transform">
         {products.map((p, i) => (
           <ShoeCard key={p.slug} product={p} index={i} eager={i < 5} />
         ))}
