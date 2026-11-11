@@ -31,8 +31,8 @@ Design completeness at plan start: 6/10 — hero/grid/product/bag are specified 
 
 ## 3. Site map (Phase 1 = face, Phase 2 = inner pages)
 
-- `/` Home — header (VANTA logo, Home/About/FAQ/Contacts, bag button), hero single-shoe spotlight (first shoe, slides in), SERIES 01 collection grid (10 shoes, 2 rows x 5 on desktop, lit shelves, hover orange glow), bottom bar "SERIES 01 / 10 SILHOUETTES" + "Explore the collection. Select a silhouette.", footer.
-- `/product/:slug` Single-shoe page — shoe slides in horizontally on orange-glowing platform, prev/next shoe partly visible at edges (clickable to move), right-hand panel: name, code, description, "Choose a size / Select a size" (EU 40–46, EU 45 pre-selected on VERGE 10 only to match the video frame; others no pre-selection), Add to bag, back to collection.
+- `/` Home — header (VANTA logo, Home/About/FAQ/Contacts, bag button), then the SHOWCASE, which IS the home: no hero, no cards. Full-viewport dark wall, 10 shoes on glass shelves (2 rows x 5 on desktop, 2 columns on mobile), a spotlight cone falling over each shoe, tagline "Form, fit from within." top-left, bottom bar "SERIES 01 / 10 SILHOUETTES" + "Explore the collection. Select a silhouette.", footer. Hover (or tap) a shoe: orange glow lights under it and the shoe lifts; clicking it opens the inspect view.
+- `/product/:slug` Inspect (full-screen) — the shoe fills the screen, huge and centred on the orange-glowing platform, prev/next shoe peeking at the SCREEN edges (clickable to move, plus overlay arrows and arrow keys). Title top-left over the stage; details docked to the right edge of the stage (description, "Choose a size / Select a size" EU 40–46, EU 45 pre-selected on VERGE 10 only to match the video frame; others no pre-selection, Add to bag), below the stage on mobile. Back to collection above the stage; prev ← current → next caption below it.
 - `/about` About — short brand story, "Form, fit from within." manifesto, series note. (Phase 2)
 - `/faq` FAQ — accordion, 6 questions (sizing, delivery, returns, rebrand/demo note, contact). (Phase 2)
 - `/contact` Contacts — showroom/contact block, form (front-end only, no backend — shows a confirmation state, does not send). (Phase 2)
@@ -60,9 +60,8 @@ No backend/CMS, no real prices, no checkout/payment, no Terms/Privacy pre-sale, 
 ## 6. Animation spec (GSAP + Lenis)
 
 - Lenis smooth scroll, synced with ScrollTrigger; skipped on prefers-reduced-motion / <768px / coarse pointer <1024px (native scroll fallback).
-- Hero: shoe x:-60→0 + opacity 0→1, platform glow scales in, headline words rise (stagger 0.06s). All transform/opacity.
-- Grid: each shoe card reveals on scroll (y:24→0, opacity), spotlight gradient fades in; hover/tap: orange radial glow under shoe (opacity 0→1, 0.25s), shoe lifts y:-6px.
-- Product page: shoe slides in horizontally from the side it was entered from; prev/next shoes peek at edges (translateX, clickable); size select = instant state, no animation.
+- Showcase: shoes rise onto their shelves on load (y:28→0, opacity, stagger 0.05s); the wall drifts slowly (scale 1→1.06, 24s, yoyo) like the video's slow camera move; hover/tap: orange radial glow under shoe (opacity 0→1, 0.25s), shoe lifts y:-6px.
+- Inspect carousel: a CSS transition on the track transform (0.7s, cubic-bezier(0.65, 0, 0.35, 1)), position = pure arithmetic from the measured stage width (slide 78%, peek 11% each side). Wrap-around clones at both ends so a neighbour always peeks; on a wrap jump the track is pre-snapped on the DOM node in the click handler BEFORE the route changes — a render-time snap flag was tried first and failed (React batched the restoring render before paint, so the wrap swept instead of snapping). No GSAP context/revert on the track: the old GSAP carousel went one shoe off after repeated in-app navigations (live bug, 2026-11-12).
 - Bag: drawer x:100%→0 (0.35s, power3.out), backdrop blur fades in; item add = drawer opens, item row fades in.
 - No layout-animating properties (no width/height/top/left animation). `will-change: transform` only on animated elements, removed after.
 
