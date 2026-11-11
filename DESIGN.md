@@ -22,18 +22,27 @@
 
 ## Decisions
 
-- **Hero shoe is VERGE 10** (10-verge.jpg): mint on pure black is the best
-  hero shot and matches the video's spotlight shoe.
-- **Grid is 5 columns × 2 rows on desktop, 2 columns on mobile.** Photos
-  have mixed aspect ratios (some portrait, some landscape), so every card is
-  a fixed `aspect-[4/5]` frame with `object-fit: cover` plus a dark
-  spotlight gradient overlay — the grid looks unified without re-cropping
-  any photo.
+- **Home IS the showcase — no hero.** The video opens straight on the wall
+  of shoes: 10 shoes on glass shelves (5 columns × 2 rows on desktop, 2
+  columns on mobile), a spotlight cone falling over each shoe, tagline
+  "Form, fit from within." top-left, bottom bar "SERIES 01 / 10
+  SILHOUETTES" + "Explore the collection. Select a silhouette." Photos
+  have mixed aspect ratios, so each shelf is a fixed `aspect-[4/3]` frame
+  with `object-fit: cover`. (The first build had a hero + card grid instead
+  — wrong: it was a generic storefront, not the video. Frame-by-frame
+  design review 2026-11-12 caught it.)
 - **Hover/tap glow**: an orange radial gradient under each shoe, opacity +
-  scale only (0.25s), shoe lifts 6px. No layout shift.
-- **Product page**: shoe slides in horizontally from the side it was entered
-  from; prev/next shoes peek at the edges as clickable cards. Size EU 40–46;
-  EU 45 pre-selected **only** on VERGE 10, to match the video frame.
+  scale only (0.25s), shoe lifts 6px. No layout shift. The wall itself
+  drifts slowly (scale 1→1.06, 24s, yoyo), like the video's slow camera.
+- **Inspect (product page) is full-screen**: the shoe is huge and centred
+  on the orange platform, neighbours peeking at the screen edges, title
+  top-left over the stage, details docked to the right edge of the stage
+  (below it on mobile). The carousel is a CSS transition on the track
+  transform (slide 78% wide, peek 11% each side), wrap-around clones at
+  both ends, and the wrap jump is pre-snapped on the DOM node in the click
+  handler — a render-time snap flag failed because React batched the
+  restoring render before paint. Size EU 40–46; EU 45 pre-selected **only**
+  on VERGE 10, to match the video frame.
 - **Bag is a shortlist, not a store**: pale-cream drawer from the right,
   blurred/dimmed backdrop, thumbnails + quantity +/− + remove, persisted in
   `localStorage`, CTA "Request this bag" (front-end confirmation state, no
@@ -75,4 +84,4 @@
   already handles deep links on Pages; the 404 only needs to translate a
   stray path (`/Vanta/product/verge-10`) into its hash route.
 - **No Vercel.** Release is GitHub Pages only, per PLAN.md §10 (essa:
-  waiting on Vercel would be a waste of time). Vite `base` is `/Vanta/`.
+  waiting on Vercel would be a waste of time). Vite `base` is `/Vantaa/` (repo name, double a).
