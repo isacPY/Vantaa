@@ -1,10 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { brand } from '../config/brand';
 import { products } from '../data/products';
 import { navigate } from './Header';
-
-gsap.registerPlugin(ScrollTrigger);
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -15,87 +13,95 @@ function imgSrc(image) {
   return `${import.meta.env.BASE_URL.replace(/\/$/, '')}${image}`;
 }
 
-export function ShoeCard({ product, index, eager }) {
+// The home screen IS the showcase — the video's wall of shoes on glass
+// shelves under spotlights. No hero, no cards, no descriptions: the shoes
+// are the page. Hovering a shoe lights the orange glow under it, like the
+// video; clicking it opens the full-screen inspect view.
+function ShelfShoe({ product, index, eager }) {
   return (
     <button
       type="button"
       onClick={() => navigate(`/product/${product.slug}`)}
-      className="reveal group relative block w-full text-left focus-visible:outline-none"
+      className="showcase-cell group relative block w-full text-left focus-visible:outline-none"
       aria-label={`View ${product.code} — ${product.colour}. ${product.description}`}
     >
-      <span className="relative block w-full aspect-[4/5] overflow-hidden spotlight">
+      {/* Spotlight cone falling from above. */}
+      <span
+        className="absolute inset-x-0 top-0 bottom-8 pointer-events-none"
+        style={{
+          background: 'linear-gradient(180deg, rgba(242,237,227,0.13) 0%, rgba(242,237,227,0.04) 55%, transparent 100%)',
+          clipPath: 'polygon(32% 0, 68% 0, 100% 100%, 0 100%)',
+        }}
+        aria-hidden="true"
+      />
+      <span className="relative block w-full aspect-[4/3] overflow-hidden">
         <img
           src={imgSrc(product.image)}
           alt={`${product.code} — ${product.colour} shoe`}
           loading={eager ? 'eager' : 'lazy'}
           className="shoe-img absolute inset-0 w-full h-full object-cover"
         />
-        {/* Dark gradient so the label stays readable over any photo. */}
-        <span className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink/75 to-transparent" aria-hidden="true" />
+        {/* Orange glow under the shoe — lights up on hover, like the video. */}
         <span className="shoe-glow absolute left-1/2 bottom-0 -translate-x-1/2 w-[75%] h-[32%]" aria-hidden="true" />
-        <span className="absolute top-3 left-3 eyebrow text-cream/70">{String(index + 1).padStart(2, '0')}</span>
-        <span className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2">
-          <span className="font-display font-extrabold tracking-wide text-lg md:text-xl leading-none">{product.code}</span>
-          <span className="eyebrow text-cream/70 hidden sm:block">View →</span>
-        </span>
+        <span className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink/60 to-transparent" aria-hidden="true" />
       </span>
-      <span className="block mt-3 text-sm text-cream-dim leading-snug">{product.description}</span>
+      {/* The glass shelf the shoe sits on. */}
+      <span className="relative block mx-auto w-[88%] h-[2px] bg-white/40 shadow-[0_10px_24px_rgba(0,0,0,0.9)]" aria-hidden="true" />
+      <span className="sr-only">{product.code}</span>
     </button>
   );
 }
 
 export default function ProductGrid() {
-  const gridRef = useRef(null);
-  const innerRef = useRef(null);
+  const wallRef = useRef(null);
+  const driftRef = useRef(null);
 
   useEffect(() => {
-    const root = gridRef.current;
-    if (!root) return;
-    if (prefersReducedMotion()) {
-      gsap.set(root.querySelectorAll('.reveal'), { clearProps: 'all', opacity: 1, y: 0 });
-      return;
-    }
-    const ctx = gsap.context(() => {
-      gsap.utils.toArray('.reveal').forEach((el) => {
-        gsap.from(el, {
-          y: 24,
-          opacity: 0,
-          duration: 0.7,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-        });
-      });
-      // Slow pan/zoom drift across the collection, like the video's
-      // slow camera move over the grid — transform only, very subtle.
-      const inner = innerRef.current;
-      if (inner) {
-        gsap.to(inner, { scale: 1.035, duration: 16, ease: 'sine.inOut', yoyo: true, repeat: -1 });
-      }
-    }, root);
-    return () => ctx.revert();
+    const wall = wallRef.current;
+    if (!wall) return;
+    if (prefersReducedMotion()) return;
+    // Entrance: the shoes rise onto their shelves, one after another.
+    const intro = gsap.from(wall.querySelectorAll('.showcase-cell'), {
+      y: 28, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.05, delay: 0.1,
+    });
+    // Slow drift across the wall, like the video's slow camera move.
+    const drift = driftRef.current
+      ? gsap.to(driftRef.current, { scale: 1.06, duration: 24, ease: 'sine.inOut', yoyo: true, repeat: -1 })
+      : null;
+    return () => {
+      intro.kill();
+      drift?.kill();
+    };
   }, []);
 
   return (
-    <section id="collection" ref={gridRef} className="max-w-[1440px] mx-auto px-5 md:px-8 py-10 md:py-16" aria-label="The collection">
-      <div className="flex items-end justify-between gap-4 mb-8 md:mb-10">
+    <section id="collection" ref={wallRef} className="relative overflow-hidden" aria-label="The collection">
+      {/* Dark gallery wall. */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'linear-gradient(180deg, #17171a 0%, #0b0b0c 70%, #0b0b0c 100%)' }}
+        aria-hidden="true"
+      />
+      <div className="relative max-w-[1440px] mx-auto px-5 md:px-8 pt-8 md:pt-12 pb-8 md:pb-10 flex flex-col min-h-[calc(100vh-65px)]">
         <div>
-          <p className="eyebrow text-accent mb-2">The collection</p>
-          <h2 className="font-display font-black uppercase tracking-tight leading-none text-4xl md:text-6xl">
-            Series 01
-          </h2>
+          <p className="eyebrow text-cream-dim mb-2">Footwear / {brand.series}</p>
+          <h1 className="font-display font-black tracking-tight leading-[0.95] text-4xl md:text-6xl">
+            {brand.tagline}
+          </h1>
         </div>
-        <p className="eyebrow text-cream-dim text-right hidden sm:block">10 silhouettes</p>
-      </div>
 
-      <div ref={innerRef} className="grid grid-cols-2 md:grid-cols-5 gap-x-4 gap-y-8 md:gap-x-5 md:gap-y-10 will-change-transform">
-        {products.map((p, i) => (
-          <ShoeCard key={p.slug} product={p} index={i} eager={i < 5} />
-        ))}
-      </div>
+        <div ref={driftRef} className="flex-1 flex items-center will-change-transform py-8 md:py-10">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-12 w-full">
+            {products.map((p, i) => (
+              <ShelfShoe key={p.slug} product={p} index={i} eager={i < 5} />
+            ))}
+          </div>
+        </div>
 
-      <div className="mt-12 md:mt-16 border-t border-white/10 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <p className="eyebrow text-cream">Series 01 / 10 silhouettes</p>
-        <p className="text-cream-dim">Explore the collection. Select a silhouette.</p>
+        <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <p className="eyebrow text-cream">{brand.series} / {brand.seriesNote}</p>
+          <p className="text-cream-dim">Explore the collection. Select a silhouette.</p>
+        </div>
       </div>
     </section>
   );
