@@ -35,17 +35,47 @@ export default function ProductPage({ slug }) {
   const [added, setAdded] = useState(false);
   const wrapRef = useRef(null);
   const [stageW, setStageW] = useState(0);
+  const [stageH, setStageH] = useState(0);
 
   // Measure the stage; the track position follows from it.
   useEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
-    const update = () => setStageW(wrap.offsetWidth);
+    const update = () => {
+      setStageW(wrap.offsetWidth);
+      setStageH(wrap.offsetHeight);
+    };
     update();
     const ro = new ResizeObserver(update);
     ro.observe(wrap);
     return () => ro.disconnect();
   }, []);
+
+  // Where the orange platform bar sits, as a % of stage height.
+  // The video's platform is a thin hard bar directly under the shoe's
+  // sole — NOT a glow at the bottom of the screen. The old bottom
+  // glow sat ~360px below RIFT 06's sole and washed across the second
+  // shoe in that photo. Each photo is object-cover inside a 78%-wide
+  // slide, so the sole's stage position follows from the cover crop:
+  // with the photo scaled to the slide width, the displayed height is
+  // slideW / aspect; the part above the stage is cropped equally top
+  // and bottom. When the displayed height fits the stage, there is no
+  // vertical crop and the sole sits at its photo fraction.
+  const slideW = stageW * SLIDE;
+  let barTop = 60;
+  if (stageW > 0 && stageH > 0 && product) {
+    const dispH = slideW / product.aspect;
+    let soleTopPct;
+    if (dispH >= stageH) {
+      const cropTop = (dispH - stageH) / 2;
+      soleTopPct = ((product.sole * dispH - cropTop) / stageH) * 100;
+    } else {
+      soleTopPct = product.sole * 100;
+    }
+    // Keep the bar on the stage even when a sole is cropped out
+    // (HALO 04's floor sits below the visible band).
+    barTop = Math.min(96, Math.max(6, soleTopPct));
+  }
 
   // Reset size when the shoe changes (VERGE 10 keeps its EU 45 default).
   useEffect(() => {
@@ -161,28 +191,36 @@ export default function ProductPage({ slug }) {
                     aria-hidden="true"
                   />
                   <span className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-ink/70 to-transparent pointer-events-none" aria-hidden="true" />
-                  {active && (
+                  {active && stageW > 0 && stageH > 0 && (
                     <>
-                      {/* The glowing orange platform the shoe stands on.
-                          Painted after the bottom gradient so the gradient
-                          never dims it — it must read on light photos too. */}
-                      {/*
-                        Flat platform ellipse hugging the very bottom of the
-                        stage, under the shoe's sole — not a tall wash over
-                        the shoe's lower half. The previous 26%-tall glow
-                        covered laces and tinted white soles orange.
-                      */}
+                      {/* The orange platform from the video: a thin, hard,
+                          bright bar whose top edge sits directly under the
+                          shoe's sole — the shoe stands ON it. The bar's top
+                          is the sole line (barTop, computed from the photo's
+                          sole fraction and the cover crop), so no orange
+                          ever rises over the shoe. The soft halo hangs
+                          BELOW the bar only, fading down into the dark. */}
                       <span
-                        className="absolute left-1/2 bottom-[0%] -translate-x-1/2 w-[100%] h-[10%] rounded-full pointer-events-none"
-                        style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.4) 0%, transparent 70%)' }}
+                        data-testid="platform-bar"
+                        className="absolute left-1/2 -translate-x-1/2 w-[72%] h-[22px] rounded-full pointer-events-none"
+                        style={{
+                          top: `${barTop}%`,
+                          background:
+                            'linear-gradient(180deg, rgba(255,238,210,0.98) 0%, rgba(255,106,26,1) 30%, rgba(255,106,26,0.92) 55%, rgba(255,106,26,0) 100%)',
+                          boxShadow: '0 0 28px rgba(255,106,26,0.55)',
+                        }}
                         aria-hidden="true"
                       />
                       <span
-                        className="absolute left-1/2 bottom-[0%] -translate-x-1/2 w-[90%] h-[14%] rounded-full pointer-events-none"
-                        style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.95) 0%, rgba(255,106,26,0.45) 55%, transparent 100%)' }}
+                        data-testid="platform-halo"
+                        className="absolute left-1/2 -translate-x-1/2 w-[90%] h-[56px] rounded-full pointer-events-none"
+                        style={{
+                          top: `calc(${barTop}% + 18px)`,
+                          background:
+                            'radial-gradient(50% 50% at 50% 0%, rgba(255,106,26,0.5) 0%, transparent 70%)',
+                        }}
                         aria-hidden="true"
                       />
-                      <span className="absolute left-1/2 bottom-[5%] -translate-x-1/2 w-[62%] h-[3px] bg-accent blur-[1px] pointer-events-none" aria-hidden="true" />
                     </>
                   )}
                 </button>
