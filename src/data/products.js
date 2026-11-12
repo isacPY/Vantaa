@@ -38,7 +38,7 @@ export const products = [
     colour: 'beige',
     // DEMO copy
     description: 'Warm beige, built for everyday miles.',
-    image: 'https://images.unsplash.com/photo-1726200335263-f2c5be07c3bc?q=80&w=1200&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1726200333737-a1c85232503a?q=80&w=1200&auto=format&fit=crop',
     verifiedFromVideo: false,
   },
   {
@@ -106,7 +106,7 @@ export const products = [
     name: 'Verge 10',
     colour: 'mint / grey / cream retro',
     description: 'A retro trainer with an oversized pull tab.',
-    image: 'https://images.unsplash.com/photo-1692482386532-7a3c6a051144?q=80&w=1200&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1583426087887-accad2c41dc2?q=80&w=1200&auto=format&fit=crop',
     verifiedFromVideo: true,
     // Matches the video frame: EU 45 pre-selected on VERGE 10 only.
     defaultSize: 45,
