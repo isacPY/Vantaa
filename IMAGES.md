@@ -50,16 +50,18 @@ red/black Jordan heel; a white Adidas heel close-up.
   colour is the closest light-blue/white of everything tried; the first
   candidate (a genuinely mesh pair) was lavender/white, not blue.
 
-## 03 — `public/images/shoes/03-beige.jpg` (166 KB, 1200×800)
+## 03 — `public/images/shoes/03-beige.jpg` (107 KB, 1200×800)
 
 - **Wanted:** beige / sand shoe
-- **Source image URL (downloaded):** https://images.unsplash.com/photo-1726200335263-f2c5be07c3bc?q=80&w=1200&auto=format&fit=crop
-- **Unsplash photo page:** https://unsplash.com/photos/a-pair-of-beige-and-blue-sneakers-with-a-white-sole-6hWeDhH7SgM
-- **Photographer:** not retrievable (see note above)
-- **Actually shows:** a close-up of a beige/sand suede Nike Dunk with a
-  light-blue suede swoosh and light-blue laces and a gum sole, on a plain
-  light background. Good match — note it is a tight close-up (not a full
-  side profile) and the Nike swoosh/logo is clearly visible.
+- **Source image URL (downloaded):** https://images.unsplash.com/photo-1726200333737-a1c85232503a?q=80&w=1200&auto=format&fit=crop
+- **Unsplash photo page:** https://unsplash.com/photos/a-white-and-blue-shoe-with-a-brown-sole-yyC5s-hlGC0
+- **Photographer:** Tory Hoffman
+- **Actually shows:** a single beige/tan suede Nike Dunk with a light-blue
+  suede swoosh and light-blue laces and a gum sole, whole in side profile
+  on a plain light-grey studio background. Replaced 2026-11-12: the
+  previous photo (photo-1726200335263) was the same shoe as a tight
+  close-up with toe and heel out of frame. Note the Nike swoosh/logo is
+  clearly visible and the background is light grey, not dark.
 
 ## 04 — `public/images/shoes/04-silver.jpg` (280 KB, 1200×900)
 
@@ -136,14 +138,17 @@ red/black Jordan heel; a white Adidas heel close-up.
   soles, in side profile on a plain white background. Excellent match —
   unambiguously red, full shoes visible.
 
-## 10 — `public/images/shoes/10-verge.jpg` (90 KB, 1200×1800) — VERGE 10
+## 10 — `public/images/shoes/10-verge.jpg` (54 KB, 1200×794) — VERGE 10
 
 - **Wanted:** mint-green / grey / cream retro trainer
-- **Source image URL (downloaded):** https://images.unsplash.com/photo-1692482386532-7a3c6a051144?q=80&w=1200&auto=format&fit=crop
-- **Unsplash photo page:** https://unsplash.com/photos/a-pair-of-sneakers-that-are-on-a-black-background-QZxz3Q5lMDI
-- **Photographer:** not retrievable (see note above)
-- **Actually shows:** a single mint-green and cream Nike Dunk (retro
-  trainer), side profile, floating against a pure black background.
-  Excellent match — the black background is ideal for the dark VANTA
-  spotlight cards. Note the Nike swoosh is visible. The search page calls
-  it a "pair", but the downloaded image is a single shoe.
+- **Source image URL (downloaded):** https://images.unsplash.com/photo-1583426087887-accad2c41dc2?q=80&w=1200&auto=format&fit=crop
+- **Unsplash photo page:** https://unsplash.com/photos/white-and-black-nike-low-top-sneaker-yuMuWhz-PGI
+- **Photographer:** Hunter Newton
+- **Actually shows:** a single pale mint-green/white retro low-top trainer
+  (Vans Old Skool-style), full shoe in side profile, floating diagonally
+  on a very dark teal-blue background. Landscape, full shoe, dark
+  background — a much better fit than the previous portrait diagonal
+  (photo-1692482386532, replaced 2026-11-12). The search page calls it a
+  "white and black Nike", but the downloaded image is visibly mint/white
+  and Vans-style, not Nike. Note the shoe sits diagonally, not strictly
+  horizontal.
