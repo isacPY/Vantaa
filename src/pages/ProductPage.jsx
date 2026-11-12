@@ -166,17 +166,23 @@ export default function ProductPage({ slug }) {
                       {/* The glowing orange platform the shoe stands on.
                           Painted after the bottom gradient so the gradient
                           never dims it — it must read on light photos too. */}
+                      {/*
+                        Flat platform ellipse hugging the very bottom of the
+                        stage, under the shoe's sole — not a tall wash over
+                        the shoe's lower half. The previous 26%-tall glow
+                        covered laces and tinted white soles orange.
+                      */}
                       <span
-                        className="absolute left-1/2 bottom-[0%] -translate-x-1/2 w-[100%] h-[18%] rounded-full pointer-events-none"
+                        className="absolute left-1/2 bottom-[0%] -translate-x-1/2 w-[100%] h-[10%] rounded-full pointer-events-none"
                         style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.4) 0%, transparent 70%)' }}
                         aria-hidden="true"
                       />
                       <span
-                        className="absolute left-1/2 bottom-[1%] -translate-x-1/2 w-[90%] h-[26%] rounded-full pointer-events-none"
-                        style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.9) 0%, rgba(255,106,26,0.4) 55%, transparent 100%)' }}
+                        className="absolute left-1/2 bottom-[0%] -translate-x-1/2 w-[90%] h-[14%] rounded-full pointer-events-none"
+                        style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.95) 0%, rgba(255,106,26,0.45) 55%, transparent 100%)' }}
                         aria-hidden="true"
                       />
-                      <span className="absolute left-1/2 bottom-[4%] -translate-x-1/2 w-[62%] h-[3px] bg-accent blur-[1px] pointer-events-none" aria-hidden="true" />
+                      <span className="absolute left-1/2 bottom-[5%] -translate-x-1/2 w-[62%] h-[3px] bg-accent blur-[1px] pointer-events-none" aria-hidden="true" />
                     </>
                   )}
                 </button>
