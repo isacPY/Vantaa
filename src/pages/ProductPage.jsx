@@ -167,16 +167,16 @@ export default function ProductPage({ slug }) {
                           Painted after the bottom gradient so the gradient
                           never dims it — it must read on light photos too. */}
                       <span
-                        className="absolute left-1/2 bottom-[1%] -translate-x-1/2 w-[100%] h-[24%] rounded-full pointer-events-none"
+                        className="absolute left-1/2 bottom-[0%] -translate-x-1/2 w-[100%] h-[18%] rounded-full pointer-events-none"
                         style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.4) 0%, transparent 70%)' }}
                         aria-hidden="true"
                       />
                       <span
-                        className="absolute left-1/2 bottom-[2%] -translate-x-1/2 w-[90%] h-[36%] rounded-full pointer-events-none"
-                        style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.95) 0%, rgba(255,106,26,0.45) 55%, transparent 100%)' }}
+                        className="absolute left-1/2 bottom-[1%] -translate-x-1/2 w-[90%] h-[26%] rounded-full pointer-events-none"
+                        style={{ background: 'radial-gradient(50% 50% at 50% 50%, rgba(255,106,26,0.9) 0%, rgba(255,106,26,0.4) 55%, transparent 100%)' }}
                         aria-hidden="true"
                       />
-                      <span className="absolute left-1/2 bottom-[6%] -translate-x-1/2 w-[62%] h-[3px] bg-accent blur-[1px] pointer-events-none" aria-hidden="true" />
+                      <span className="absolute left-1/2 bottom-[4%] -translate-x-1/2 w-[62%] h-[3px] bg-accent blur-[1px] pointer-events-none" aria-hidden="true" />
                     </>
                   )}
                 </button>
@@ -190,8 +190,10 @@ export default function ProductPage({ slug }) {
             style={{ background: 'linear-gradient(180deg, rgba(11,11,12,0.88) 0%, rgba(11,11,12,0.5) 55%, transparent 100%)' }}
             aria-hidden="true"
           />
-          {/* Title over the stage, top-left — like the video. */}
-          <div className="absolute top-5 left-5 md:top-8 md:left-8 z-10 pointer-events-none">
+          {/* Title over the stage, top-left — like the video. Keyed by
+              shoe so it fades in with the slide instead of swapping
+              instantly while the photo is still moving. */}
+          <div key={product.slug} className="animate-fade-up absolute top-5 left-5 md:top-8 md:left-8 z-10 pointer-events-none">
             <p className="eyebrow text-accent mb-2">Series 01 — {product.colour}</p>
             <h1 className="font-display font-black uppercase tracking-tight leading-[0.95] text-4xl md:text-6xl">
               {product.code}
@@ -222,7 +224,7 @@ export default function ProductPage({ slug }) {
         {/* Details docked to the right of the stage on desktop, below on mobile. */}
         <div
           key={product.slug}
-          className="animate-fade-up mx-5 md:mx-0 mt-6 md:mt-0 md:absolute md:right-8 md:top-1/2 md:-translate-y-1/2 md:w-[320px] md:bg-ink/80 md:backdrop-blur md:border md:border-white/10 md:p-6 z-10"
+          className="animate-fade-up mx-5 md:mx-0 mt-6 md:mt-0 md:absolute md:right-8 md:top-1/2 md:-translate-y-1/2 md:w-[320px] md:bg-ink md:border md:border-white/10 md:p-6 z-10"
         >
           <p className="text-base md:text-lg text-cream/90 leading-relaxed mb-6 max-w-md">{product.description}</p>
 
