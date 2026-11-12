@@ -17,7 +17,28 @@ function imgSrc(image) {
 // shelves under spotlights. No hero, no cards, no descriptions: the shoes
 // are the page. Hovering a shoe lights the orange glow under it, like the
 // video; clicking it opens the full-screen inspect view.
+
+// Where a shoe's sole sits in its 4:3 tile, as a % of tile height.
+// The old hover glow was pinned to the bottom 32% of the tile, so on
+// RIFT 06 — sole at 48% of the tile — it floated detached ~20% below
+// the shoe instead of the shoe standing on it, like the video. The
+// glow now starts at the sole line (product.sole, measured per photo;
+// the cover crop math is the same as the inspect platform bar).
+const TILE_ASPECT = 4 / 3;
+function tileSoleTop(sole, aspect) {
+  let top;
+  if (aspect >= TILE_ASPECT) {
+    top = sole * 100; // height governs, no vertical crop
+  } else {
+    const dispH = TILE_ASPECT / aspect;
+    const cropTop = (dispH - 1) / 2;
+    top = (sole * dispH - cropTop) * 100;
+  }
+  return Math.min(97, Math.max(8, top));
+}
+
 function ShelfShoe({ product, index, eager }) {
+  const glowTop = tileSoleTop(product.sole, product.aspect);
   return (
     <button
       type="button"
@@ -32,8 +53,20 @@ function ShelfShoe({ product, index, eager }) {
           loading={eager ? 'eager' : 'lazy'}
           className="shoe-img absolute inset-0 w-full h-full object-cover"
         />
-        {/* Orange glow under the shoe — lights up on hover, like the video. */}
-        <span className="shoe-glow absolute left-1/2 bottom-0 -translate-x-1/2 w-[75%] h-[32%]" aria-hidden="true" />
+        {/* Orange glow under the shoe — lights up on hover, like the
+            video. It starts at the sole line, bright core just under
+            the sole, fading down to the tile bottom: the shoe stands
+            ON the glow instead of the glow floating below it. */}
+        <span
+          data-testid="shelf-glow"
+          className="shoe-glow absolute left-1/2 bottom-0 -translate-x-1/2 w-[85%]"
+          style={{
+            top: `${glowTop - 3}%`,
+            background:
+              'radial-gradient(60% 40% at 50% 15%, rgba(255,106,26,0.8) 0%, rgba(255,106,26,0.28) 45%, transparent 75%)',
+          }}
+          aria-hidden="true"
+        />
         <span className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink/60 to-transparent" aria-hidden="true" />
         {/*
           Spotlight cone + pool of light, painted OVER the photo. They
