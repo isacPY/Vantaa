@@ -50,7 +50,7 @@ function ShelfShoe({ product, index, eager }) {
         <span
           className="absolute inset-x-0 top-0 bottom-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(242,237,227,0.34) 0%, rgba(242,237,227,0.12) 45%, transparent 85%)',
+            background: 'linear-gradient(180deg, rgba(242,237,227,0.42) 0%, rgba(242,237,227,0.14) 45%, transparent 85%)',
             clipPath: 'polygon(30% 0, 70% 0, 100% 100%, 0 100%)',
           }}
           aria-hidden="true"
