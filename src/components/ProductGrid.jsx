@@ -25,21 +25,6 @@ function ShelfShoe({ product, index, eager }) {
       className="showcase-cell group relative block w-full text-left focus-visible:outline-none"
       aria-label={`View ${product.code} — ${product.colour}. ${product.description}`}
     >
-      {/* Pool of light on the wall behind the shoe. */}
-      <span
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(62% 55% at 50% 36%, rgba(242,237,227,0.14) 0%, transparent 72%)' }}
-        aria-hidden="true"
-      />
-      {/* Spotlight cone falling from above — bright enough to read. */}
-      <span
-        className="absolute inset-x-0 top-0 bottom-8 pointer-events-none"
-        style={{
-          background: 'linear-gradient(180deg, rgba(242,237,227,0.34) 0%, rgba(242,237,227,0.12) 45%, transparent 82%)',
-          clipPath: 'polygon(26% 0, 74% 0, 100% 100%, 0 100%)',
-        }}
-        aria-hidden="true"
-      />
       <span className="relative block w-full aspect-[4/3] overflow-hidden">
         <img
           src={imgSrc(product.image)}
@@ -50,15 +35,41 @@ function ShelfShoe({ product, index, eager }) {
         {/* Orange glow under the shoe — lights up on hover, like the video. */}
         <span className="shoe-glow absolute left-1/2 bottom-0 -translate-x-1/2 w-[75%] h-[32%]" aria-hidden="true" />
         <span className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink/60 to-transparent" aria-hidden="true" />
+        {/*
+          Spotlight cone + pool of light, painted OVER the photo. They
+          were behind it before, so on the live site — where the photos
+          are opaque — they were completely hidden and the wall read as
+          flat black. The cone falls from above onto the shoe; the pool
+          sits high, as wall light, so it never washes the shoe itself.
+        */}
+        <span
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(60% 45% at 50% 28%, rgba(242,237,227,0.10) 0%, transparent 72%)' }}
+          aria-hidden="true"
+        />
+        <span
+          className="absolute inset-x-0 top-0 bottom-0 pointer-events-none"
+          style={{
+            background: 'linear-gradient(180deg, rgba(242,237,227,0.34) 0%, rgba(242,237,227,0.12) 45%, transparent 85%)',
+            clipPath: 'polygon(30% 0, 70% 0, 100% 100%, 0 100%)',
+          }}
+          aria-hidden="true"
+        />
       </span>
-      {/* The glass shelf the shoe sits on — a ledge with a bright top
-          edge, a translucent body and a drop shadow, like the video. */}
+      {/* The glass shelf the shoe sits on — a ledge with a bright lit
+          front edge, a translucent body, a drop shadow and a faint
+          reflection below, like the video. */}
       <span
-        className="relative block mx-auto w-[88%] h-[7px] rounded-[1px]"
+        className="relative block mx-auto w-[88%] h-[9px] rounded-[1px]"
         style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.28) 22%, rgba(255,255,255,0.07) 100%)',
-          boxShadow: '0 14px 26px rgba(0,0,0,0.85), 0 2px 6px rgba(0,0,0,0.6)',
+          background: 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.35) 22%, rgba(255,255,255,0.10) 100%)',
+          boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.9), 0 14px 26px rgba(0,0,0,0.85), 0 2px 6px rgba(0,0,0,0.6)',
         }}
+        aria-hidden="true"
+      />
+      <span
+        className="relative block mx-auto w-[88%] h-[10px] pointer-events-none"
+        style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.14) 0%, transparent 100%)' }}
         aria-hidden="true"
       />
       <span className="sr-only">{product.code}</span>
