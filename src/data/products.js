@@ -2,14 +2,17 @@
 // Only VECTOR 02, RIFT 06 and VERGE 10 descriptions are from the video;
 // the other 7 names/descriptions are demo copy (marked DEMO below).
 // `sole` is where the main shoe's sole sits as a fraction of the photo's
-// height. First set by viewing each photo; CORRECTED 2026-11-13 from a
-// pixel measurement of all 10 soles on the live homepage (browser task
-// 01:04 PKT), anchored on RIFT 06 = 0.48, which an independent pixel scan
-// of the live inspect page had already confirmed. The eyeball estimates
-// were off by up to 0.13 (EMBER 0.72 → 0.85, HALO 0.88 → 0.78). The
-// inspect page and the homepage glow both use it to put the orange
-// platform/glow directly under the sole, like the video. `aspect` is the
-// photo's w/h.
+// height. It must be the sole's LOWEST point (toe tip or heel, whichever
+// is lower) — for diagonal shoes the sole's middle is much higher than
+// its lowest point, and a horizontal glow set to the middle cuts across
+// the low end. First set by viewing each photo, then corrected twice
+// from live pixel measurements: round 6 (2026-11-13) measured the sole
+// at a non-lowest point and was still wrong on the diagonal shoes;
+// round 7 (2026-11-14 01:08 PKT) measured each sole's lowest point on
+// the live homepage and these values come from that (MONOLITH/DUNE/RIFT
+// were already on and are unchanged). The inspect page and the homepage
+// glow both use it to put the orange platform/glow directly under the
+// sole, like the video. `aspect` is the photo's w/h.
 // Photos: free Unsplash images, verified in IMAGES.md. Known mismatches are
 // lived with, not hidden — see IMAGES.md (e.g. 02 is a leather high-top, not
 // mesh; 06 has no yellow trim; 08 is bright golden-yellow, not muted mustard;
@@ -41,7 +44,7 @@ export const products = [
     description: 'Low, fast and breathable…',
     image: 'https://images.unsplash.com/photo-1685273510889-b2e141259a40?q=80&w=1200&auto=format&fit=crop',
     verifiedFromVideo: true,
-    sole: 0.64,
+    sole: 0.71,
     aspect: 0.563,
   },
   {
@@ -65,7 +68,7 @@ export const products = [
     description: 'Cool silver, light on its feet.',
     image: 'https://images.unsplash.com/photo-1719523677291-a395426c1a87?q=80&w=1200&auto=format&fit=crop',
     verifiedFromVideo: false,
-    sole: 0.78,
+    sole: 0.83,
     aspect: 1.333,
   },
   {
@@ -77,7 +80,7 @@ export const products = [
     description: 'Grip for wet ground, light-blue spike plate.',
     image: 'https://images.unsplash.com/photo-1511167814253-23b850fcd859?q=80&w=1200&auto=format&fit=crop',
     verifiedFromVideo: false,
-    sole: 0.66,
+    sole: 0.71,
     aspect: 0.8,
   },
   {
@@ -100,7 +103,7 @@ export const products = [
     description: 'A court classic in white and blue.',
     image: 'https://images.unsplash.com/photo-1699901232384-f1646fb2a8da?q=80&w=1200&auto=format&fit=crop',
     verifiedFromVideo: false,
-    sole: 0.84,
+    sole: 0.9,
     aspect: 1.5,
   },
   {
@@ -112,7 +115,7 @@ export const products = [
     description: 'A high-top in burnt mustard.',
     image: 'https://images.unsplash.com/photo-1631312788472-e90ae179756a?q=80&w=1200&auto=format&fit=crop',
     verifiedFromVideo: false,
-    sole: 0.85,
+    sole: 0.89,
     aspect: 1.425,
   },
   {
@@ -124,7 +127,7 @@ export const products = [
     description: 'Full red, impossible to miss.',
     image: 'https://images.unsplash.com/photo-1675625500629-c74de60d7c2b?q=80&w=1200&auto=format&fit=crop',
     verifiedFromVideo: false,
-    sole: 0.87,
+    sole: 0.88,
     aspect: 1.277,
   },
   {
@@ -135,7 +138,7 @@ export const products = [
     description: 'A retro trainer with an oversized pull tab.',
     image: 'https://images.unsplash.com/photo-1583426087887-accad2c41dc2?q=80&w=1200&auto=format&fit=crop',
     verifiedFromVideo: true,
-    sole: 0.81,
+    sole: 0.83,
     aspect: 1.511,
     // Matches the video frame: EU 45 pre-selected on VERGE 10 only.
     defaultSize: 45,
