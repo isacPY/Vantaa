@@ -73,10 +73,13 @@ export default function ProductPage({ slug }) {
       soleTopPct = product.sole * 100;
     }
     // Keep the bar on the stage even when a sole is cropped out
-    // (HALO 04's floor sits below the visible band). The bar's top
-    // edge sits exactly ON the sole line: the shoe stands on the
-    // platform and the bar never covers any part of the shoe.
-    barTop = Math.min(96, Math.max(6, soleTopPct));
+    // (HALO 04's floor sits below the visible band). Nudged half a
+    // percent up so the bar's top edge touches the sole's lowest
+    // point: at exactly the sole line the live check still showed a
+    // small dark gap (the bar's solid top sits a few px below its
+    // box top), and half a percent closes it without covering the
+    // sole.
+    barTop = Math.min(96, Math.max(6, soleTopPct - 0.5));
   }
 
   // Reset size when the shoe changes (VERGE 10 keeps its EU 45 default).
