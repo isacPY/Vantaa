@@ -54,16 +54,20 @@ function ShelfShoe({ product, index, eager }) {
           className="shoe-img absolute inset-0 w-full h-full object-cover"
         />
         {/* Orange glow under the shoe — lights up on hover, like the
-            video. It starts at the sole line, bright core just under
-            the sole, fading down to the tile bottom: the shoe stands
-            ON the glow instead of the glow floating below it. */}
+            video. Its top edge sits exactly ON the sole line (not
+            above it, not below it): the shoe stands on the glow and
+            the glow never covers any part of the shoe. The gradient
+            is centred on the box's TOP edge, so the orange is visible
+            right from the sole line — the old centre-at-15% gradient
+            only became visible ~7% below the sole, leaving a dark
+            gap on RIFT 06. */}
         <span
           data-testid="shelf-glow"
           className="shoe-glow absolute left-1/2 bottom-0 -translate-x-1/2 w-[85%]"
           style={{
-            top: `${glowTop - 3}%`,
+            top: `${glowTop}%`,
             background:
-              'radial-gradient(60% 40% at 50% 15%, rgba(255,106,26,0.8) 0%, rgba(255,106,26,0.28) 45%, transparent 75%)',
+              'radial-gradient(70% 55% at 50% 0%, rgba(255,106,26,0.9) 0%, rgba(255,106,26,0.32) 50%, transparent 80%)',
           }}
           aria-hidden="true"
         />
