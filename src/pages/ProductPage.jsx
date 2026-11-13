@@ -73,7 +73,9 @@ export default function ProductPage({ slug }) {
       soleTopPct = product.sole * 100;
     }
     // Keep the bar on the stage even when a sole is cropped out
-    // (HALO 04's floor sits below the visible band).
+    // (HALO 04's floor sits below the visible band). The bar's top
+    // edge sits exactly ON the sole line: the shoe stands on the
+    // platform and the bar never covers any part of the shoe.
     barTop = Math.min(96, Math.max(6, soleTopPct));
   }
 
