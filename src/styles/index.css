@@ -69,10 +69,9 @@ body {
 .shoe-img {
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.group:hover .shoe-img,
-.group:focus-visible .shoe-img {
-  transform: translateY(-6px);
-}
+/* No lift on hover: the shoe must stay put so its sole stays on the
+   glow's top edge. Lifting it 6px opened a dark gap between sole and
+   glow — the opposite of the video, where the shoe stands on the glow. */
 
 /* Hero platform glow. */
 .platform-glow {
