@@ -1,27 +1,21 @@
 // VANTA — Series 01 products.
 // Only VECTOR 02, RIFT 06 and VERGE 10 descriptions are from the video;
 // the other 7 names/descriptions are demo copy (marked DEMO below).
-// `sole` is where the main shoe's sole sits as a fraction of the photo's
-// height. It must be the sole's LOWEST point (toe tip or heel, whichever
-// is lower) — for diagonal shoes the sole's middle is much higher than
-// its lowest point, and a horizontal glow set to the middle cuts across
-// the low end. First set by viewing each photo, then corrected twice
-// from live pixel measurements: round 6 (2026-11-13) measured the sole
-// at a non-lowest point and was still wrong on the diagonal shoes;
-// round 7 (2026-11-14 01:08 PKT) measured each sole's lowest point on
-// the live homepage and these values come from that (MONOLITH/DUNE/RIFT
-// were already on and are unchanged). The inspect page and the homepage
-// glow both use it to put the orange platform/glow directly under the
-// sole, like the video. `aspect` is the photo's w/h.
-// Photos: free Unsplash images, verified in IMAGES.md. Known mismatches are
-// lived with, not hidden — see IMAGES.md (e.g. 02 is a leather high-top, not
-// mesh; 06 has no yellow trim; 08 is bright golden-yellow, not muted mustard;
-// several photos show visible Nike/Jordan branding — acceptable for a demo).
-// Images are the verified free Unsplash URLs (see IMAGES.md). They are remote
-// on purpose: the GitHub connector cannot push binary files, so the repo is
-// text-only and the live Pages site loads the same verified photos from
-// images.unsplash.com. Local copies live in public/images/shoes/ in the
-// workspace; to self-host, set each `image` back to '/images/shoes/<file>'.
+// Images (redesign 2026-11-15): 10 clean original AI-rendered chunky
+// retro-tech runners, no logos, no text, transparent background, same
+// side 3/4 view facing right, same scale, same bottom edge. Each is a
+// 1200×800 WebP (aspect 1.5), the shoe normalised to 1080px wide with
+// 60px side padding, and the sole at the image bottom edge — so
+// `sole` is 0.99 for every shoe (the sole IS the bottom edge) and the
+// shoe sits directly on its shelf with a 0px gap. The old Unsplash
+// photos (real brand product shots, several with visible Nike/Jordan
+// branding) are replaced.
+// NOTE: the repo is text-only via the GitHub connector (it cannot push
+// binary files), so the 10 WebPs live in public/images/shoes/ in the
+// workspace and must be uploaded to the repo (GitHub web UI) for the
+// live Pages site to show them — the code already points at the local
+// paths. Until then the live site shows broken images; the dev server
+// (which serves public/) shows them.
 
 export const products = [
   {
@@ -31,9 +25,9 @@ export const products = [
     colour: 'cream',
     // DEMO copy
     description: 'A clean silhouette in bone cream.',
-    image: 'https://images.unsplash.com/photo-1579632265758-674f6e1513b0?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/monolith-01.webp',
     verifiedFromVideo: false,
-    sole: 0.78,
+    sole: 0.99,
     aspect: 1.5,
   },
   {
@@ -42,10 +36,10 @@ export const products = [
     name: 'Vector 02',
     colour: 'light blue / white mesh',
     description: 'Low, fast and breathable…',
-    image: 'https://images.unsplash.com/photo-1685273510889-b2e141259a40?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/vector-02.webp',
     verifiedFromVideo: true,
-    sole: 0.71,
-    aspect: 0.563,
+    sole: 0.99,
+    aspect: 1.5,
   },
   {
     slug: 'dune-03',
@@ -54,9 +48,9 @@ export const products = [
     colour: 'beige',
     // DEMO copy
     description: 'Warm beige, built for everyday miles.',
-    image: 'https://images.unsplash.com/photo-1726200333737-a1c85232503a?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/dune-03.webp',
     verifiedFromVideo: false,
-    sole: 0.82,
+    sole: 0.99,
     aspect: 1.5,
   },
   {
@@ -66,10 +60,10 @@ export const products = [
     colour: 'silver / grey',
     // DEMO copy
     description: 'Cool silver, light on its feet.',
-    image: 'https://images.unsplash.com/photo-1719523677291-a395426c1a87?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/halo-04.webp',
     verifiedFromVideo: false,
-    sole: 0.83,
-    aspect: 1.333,
+    sole: 0.99,
+    aspect: 1.5,
   },
   {
     slug: 'spike-05',
@@ -78,10 +72,10 @@ export const products = [
     colour: 'light-blue spiked',
     // DEMO copy
     description: 'Grip for wet ground, light-blue spike plate.',
-    image: 'https://images.unsplash.com/photo-1511167814253-23b850fcd859?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/spike-05.webp',
     verifiedFromVideo: false,
-    sole: 0.71,
-    aspect: 0.8,
+    sole: 0.99,
+    aspect: 1.5,
   },
   {
     slug: 'rift-06',
@@ -89,9 +83,9 @@ export const products = [
     name: 'Rift 06',
     colour: 'olive + acid lime',
     description: 'Built for rough ground, finished in acid lime.',
-    image: 'https://images.unsplash.com/photo-1597580838322-8c1930a37e7d?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/rift-06.webp',
     verifiedFromVideo: true,
-    sole: 0.48,
+    sole: 0.99,
     aspect: 1.5,
   },
   {
@@ -101,9 +95,9 @@ export const products = [
     colour: 'white / blue',
     // DEMO copy
     description: 'A court classic in white and blue.',
-    image: 'https://images.unsplash.com/photo-1699901232384-f1646fb2a8da?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/court-07.webp',
     verifiedFromVideo: false,
-    sole: 0.9,
+    sole: 0.99,
     aspect: 1.5,
   },
   {
@@ -113,10 +107,10 @@ export const products = [
     colour: 'mustard high-top',
     // DEMO copy
     description: 'A high-top in burnt mustard.',
-    image: 'https://images.unsplash.com/photo-1631312788472-e90ae179756a?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/ember-08.webp',
     verifiedFromVideo: false,
-    sole: 0.89,
-    aspect: 1.425,
+    sole: 0.99,
+    aspect: 1.5,
   },
   {
     slug: 'scarlet-09',
@@ -125,10 +119,10 @@ export const products = [
     colour: 'red',
     // DEMO copy
     description: 'Full red, impossible to miss.',
-    image: 'https://images.unsplash.com/photo-1675625500629-c74de60d7c2b?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/scarlet-09.webp',
     verifiedFromVideo: false,
-    sole: 0.88,
-    aspect: 1.277,
+    sole: 0.99,
+    aspect: 1.5,
   },
   {
     slug: 'verge-10',
@@ -136,10 +130,10 @@ export const products = [
     name: 'Verge 10',
     colour: 'mint / grey / cream retro',
     description: 'A retro trainer with an oversized pull tab.',
-    image: 'https://images.unsplash.com/photo-1583426087887-accad2c41dc2?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/shoes/verge-10.webp',
     verifiedFromVideo: true,
-    sole: 0.83,
-    aspect: 1.511,
+    sole: 0.99,
+    aspect: 1.5,
     // Matches the video frame: EU 45 pre-selected on VERGE 10 only.
     defaultSize: 45,
   },
