@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0b0b0c;
-  --color-ink-2: #101012;
+  --color-ink: #0d1320;
+  --color-ink-2: #1a2233;
   --color-cream: #f2ede3;
   --color-cream-dim: #b8b2a4;
   --color-accent: #ff6a1a;
@@ -34,7 +34,7 @@ body {
   color: var(--color-ink);
 }
 
-/* Eyebrow labels: 11px uppercase, wide tracking (PLAN §1). */
+/* Eyebrow labels: 11px uppercase, wide tracking (nav / footer). */
 .eyebrow {
   font-size: 11px;
   line-height: 1.4;
@@ -43,48 +43,136 @@ body {
   font-weight: 600;
 }
 
-/* Spotlight shelf: radial light from above, dark edges — the premium
-   comes from light, not box-shadows (PLAN §1). */
-.spotlight {
+/* ---- Redesign 2026-11-15 (VANTA): the wall ---- */
+/* Dark blue-slate wall: vertical gradient #0d1320 → #1a2233, lighter in
+   the upper middle, soft vignette on the edges, very faint vertical
+   streak texture (1–2% opacity). Slightly bluish, not pure black. */
+.wall {
   background:
-    radial-gradient(120% 90% at 50% 0%, rgba(242, 237, 227, 0.14) 0%, rgba(242, 237, 227, 0.05) 45%, transparent 70%),
-    linear-gradient(180deg, #141416 0%, #0b0b0c 100%);
+    radial-gradient(120% 70% at 50% 0%, rgba(150, 170, 205, 0.1) 0%, transparent 62%),
+    radial-gradient(130% 100% at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.32) 100%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.012) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, #0d1320 0%, #141c2c 48%, #1a2233 100%);
 }
-
-/* Orange glow under a shoe — opacity/scale only, no layout shift. */
-.shoe-glow {
-  background: radial-gradient(50% 50% at 50% 50%, rgba(255, 106, 26, 0.55) 0%, rgba(255, 106, 26, 0.18) 55%, transparent 100%);
-  opacity: 0;
-  transform: scale(0.85);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+.wall::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   pointer-events: none;
-}
-.group:hover .shoe-glow,
-.group:focus-visible .shoe-glow,
-.group.is-active .shoe-glow {
-  opacity: 1;
-  transform: scale(1);
+  opacity: 0.02;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
 }
 
+/* Soft diffused spotlight beam: tall vertical gradient, no visible
+   edges. Strengthened from the spec's 0.18 top alpha — at 0.18 the
+   beams were invisible in the render. */
+.spotlight-beam {
+  background: linear-gradient(
+    180deg,
+    rgba(200, 215, 235, 0.32) 0%,
+    rgba(200, 215, 235, 0.14) 40%,
+    rgba(200, 215, 235, 0) 70%
+  );
+  filter: blur(26px);
+}
+/* Soft elliptical light pool on the wall at the top of each column. */
+.spotlight-pool {
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(200, 215, 235, 0.25) 0%,
+    rgba(200, 215, 235, 0) 70%
+  );
+  filter: blur(18px);
+}
+/* Beams gently breathe (opacity 0.85↔1, 6s). */
+@keyframes beam-breathe {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+.beam-breathe {
+  animation: beam-breathe 6s ease-in-out infinite;
+}
+
+/* Thin translucent glass shelf: ~6px, 1px brighter top edge, slight
+   backdrop blur. Width ≈ 92% of the cell, centered. */
+.shelf-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+/* Faint reflection gradient (~10px) under the shelf. */
+.shelf-reflection {
+  height: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+}
+
+/* Trailing orange glow on the shelf: bright 2px line + blurred ellipse.
+   The glow is a child of the shelf wrapper; its opacity is driven by
+   the tile's local `lit` state with fast-in / slow-out timing. */
+.glow-line {
+  height: 2px;
+  background: #ff7a1a;
+  box-shadow: 0 0 12px rgba(255, 122, 26, 0.9);
+  transition: box-shadow 1.1s cubic-bezier(0.65, 0, 0.25, 1);
+}
+.glow-ellipse {
+  height: 20px;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(255, 122, 26, 0.55) 0%,
+    rgba(255, 122, 26, 0.14) 55%,
+    transparent 100%
+  );
+  filter: blur(16px);
+  transition: filter 1.1s cubic-bezier(0.65, 0, 0.25, 1);
+}
+/* Stronger glow on the zoomed shoe's shelf (detail view). */
+.glow-strong .glow-line {
+  box-shadow: 0 0 24px 2px rgba(255, 122, 26, 0.95);
+}
+.glow-strong .glow-ellipse {
+  filter: blur(28px);
+}
+
+/* Tiny soft contact shadow under the shoe only. */
+.contact-shadow {
+  height: 12px;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(0, 0, 0, 0.45) 0%,
+    transparent 70%
+  );
+  filter: blur(6px);
+}
+
+/* Shoe image: no transition on transform by default (the lift is
+   handled by the wrapper); the tile fades/blurs during the zoom via
+   its own inline transition. */
 .shoe-img {
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-/* No lift on hover: the shoe must stay put so its sole stays on the
-   glow's top edge. Lifting it 6px opened a dark gap between sole and
-   glow — the opposite of the video, where the shoe stands on the glow. */
-
-/* Hero platform glow. */
-.platform-glow {
-  background: radial-gradient(60% 60% at 50% 50%, rgba(255, 106, 26, 0.5) 0%, rgba(255, 106, 26, 0.12) 60%, transparent 100%);
+  display: block;
 }
 
-/* Fade-up entrance for the inspect panel (re-triggered per shoe). */
+/* Fade-up entrance for the detail overlay (re-triggered per shoe). */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-up {
   animation: fadeUp 0.6s ease both;
+}
+
+/* Grid entrance: shoes rise onto their shelves, one after another.
+   CSS (not GSAP) — the GSAP intro got stuck at opacity 0 in the dev
+   browser (StrictMode double-effect + ticker), leaving the whole grid
+   invisible. The delay is set per tile inline for the stagger. */
+@keyframes cell-in {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.cell-in {
+  animation: cell-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* Word-rise headline: each word in an overflow-hidden mask. */
@@ -100,15 +188,15 @@ body {
   will-change: transform;
 }
 
-/* Focus visibility — keyboard access (PLAN §1). */
+/* Focus visibility — keyboard access. */
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
-/* Reduced motion: Lenis is skipped in JS; CSS kills transitions too. */
+/* Reduced motion: kill transitions too. */
 @media (prefers-reduced-motion: reduce) {
-  .shoe-glow, .shoe-img { transition: none; }
+  .beam-breathe { animation: none; }
   html { scroll-behavior: auto; }
 }
 
