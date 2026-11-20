@@ -6,8 +6,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import BagDrawer from './components/BagDrawer';
 import ErrorBoundary from './components/ErrorBoundary';
-import HomePage from './pages/HomePage';
-import ProductPage from './pages/ProductPage';
+import CollectionPage from './pages/CollectionPage';
 import AboutPage from './pages/AboutPage';
 import FaqPage from './pages/FaqPage';
 import ContactPage from './pages/ContactPage';
@@ -69,9 +68,12 @@ export default function App() {
   const page = useMemo(() => {
     switch (location.route) {
       case '/':
-        return <HomePage />;
+        return <CollectionPage slug={null} />;
       case '/product':
-        return <ProductPage slug={location.slug} />;
+        // The collection wall + detail overlay live in one tree so a
+        // click can camera-zoom the wall (redesign 2026-11-15). The old
+        // separate ProductPage slide inspect is gone.
+        return <CollectionPage slug={location.slug} />;
       case '/about':
         return <AboutPage />;
       case '/faq':
