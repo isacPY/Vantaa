@@ -1,166 +1,213 @@
-import React, { useEffect, useRef } from 'react';
-import gsap from 'gsap';
+import React, { useEffect, useRef, useState } from 'react';
 import { brand } from '../config/brand';
 import { products } from '../data/products';
-import { navigate } from './Header';
 
-function prefersReducedMotion() {
-  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
+// Local images live under the Vite base (/Vantaa/ on Pages, / in dev
+// with the base set) — prepend it so an absolute path resolves.
 function imgSrc(image) {
   if (/^https?:\/\//.test(image)) return image;
   return `${import.meta.env.BASE_URL.replace(/\/$/, '')}${image}`;
 }
 
-// The home screen IS the showcase — the video's wall of shoes on glass
-// shelves under spotlights. No hero, no cards, no descriptions: the shoes
-// are the page. Hovering a shoe lights the orange glow under it, like the
-// video; clicking it opens the full-screen inspect view.
+// Redesign 2026-11-15 (VANTA): the home screen IS the showcase — the
+// wall of shoes on glass shelves under soft diffused light. No labels:
+// the grid shows ONLY shoes, shelves and light. Names appear only on
+// the detail page. Each shoe fills ~88% of its cell; the sole rests
+// DIRECTLY on the shelf (the new cut-out images have the sole at the
+// image bottom edge, so the image bottom = the shelf top, 0px gap).
+// The wall is one container that the collection page scales/translates
+// for the camera zoom; each tile fades/blurs as it leaves the viewport.
 
-// Where a shoe's sole sits in its 4:3 tile, as a % of tile height.
-// The old hover glow was pinned to the bottom 32% of the tile, so on
-// RIFT 06 — sole at 48% of the tile — it floated detached ~20% below
-// the shoe instead of the shoe standing on it, like the video. The
-// glow now starts at the sole line (product.sole, measured per photo;
-// the cover crop math is the same as the inspect platform bar).
-const TILE_ASPECT = 4 / 3;
-function tileSoleTop(sole, aspect) {
-  let top;
-  if (aspect >= TILE_ASPECT) {
-    top = sole * 100; // height governs, no vertical crop
-  } else {
-    const dispH = TILE_ASPECT / aspect;
-    const cropTop = (dispH - 1) / 2;
-    top = (sole * dispH - cropTop) * 100;
+function ShelfShoe({ product, index, activeSlug, isNeighbour, isZoomed, onSelect, registerShoeRef }) {
+  const isActive = product.slug === activeSlug;
+  // Trailing orange glow: local state + a 90ms leave delay, so sweeping
+  // the mouse across several shoes leaves 2–3 shelves glowing at once.
+  // FAST fade-in (0.15s), SLOW fade-out (0.9s).
+  const [lit, setLit] = useState(false);
+  const leaveTimer = useRef(null);
+
+  useEffect(() => () => {
+    if (leaveTimer.current) clearTimeout(leaveTimer.current);
+  }, []);
+  const handleEnter = () => {
+    if (leaveTimer.current) clearTimeout(leaveTimer.current);
+    setLit(true);
+  };
+  const handleLeave = () => {
+    if (leaveTimer.current) clearTimeout(leaveTimer.current);
+    leaveTimer.current = setTimeout(() => setLit(false), 90);
+  };
+
+  // Zoom fade/blur (1.1s, same ease as the wall zoom): the active shoe
+  // stays, its neighbours stay visible at 50% + blur 2px (cut off at
+  // the screen edges), everything else fades out + blurs to 6px.
+  let tileOpacity = 1;
+  let tileBlur = 0;
+  if (isZoomed) {
+    if (isActive) {
+      tileOpacity = 1;
+      tileBlur = 0;
+    } else if (isNeighbour) {
+      tileOpacity = 0.5;
+      tileBlur = 2;
+    } else {
+      tileOpacity = 0;
+      tileBlur = 6;
+    }
   }
-  return Math.min(97, Math.max(8, top));
-}
 
-function ShelfShoe({ product, index, eager }) {
-  const glowTop = tileSoleTop(product.sole, product.aspect);
+  const glowStrong = isActive && isZoomed;
+
   return (
     <button
       type="button"
-      onClick={() => navigate(`/product/${product.slug}`)}
-      className="showcase-cell group relative block w-full text-left focus-visible:outline-none"
+      onClick={() => onSelect(product.slug)}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      onFocus={handleEnter}
+      onBlur={handleLeave}
+      className="showcase-cell cell-in group relative block w-full cursor-pointer text-left focus-visible:outline-none"
+      style={{ animationDelay: `${0.1 + index * 0.05}s` }}
       aria-label={`View ${product.code} — ${product.colour}. ${product.description}`}
     >
-      <span className="relative block w-full aspect-[4/3] overflow-hidden">
-        <img
-          src={imgSrc(product.image)}
-          alt={`${product.code} — ${product.colour} shoe`}
-          loading={eager ? 'eager' : 'lazy'}
-          className="shoe-img absolute inset-0 w-full h-full object-cover"
-        />
-        {/* Orange glow under the shoe — lights up on hover, like the
-            video. Its top edge sits exactly ON the sole line (not
-            above it, not below it): the shoe stands on the glow and
-            the glow never covers any part of the shoe. The gradient
-            is centred on the box's TOP edge, so the orange is visible
-            right from the sole line — the old centre-at-15% gradient
-            only became visible ~7% below the sole, leaving a dark
-            gap on RIFT 06. */}
-        <span
-          data-testid="shelf-glow"
-          className="shoe-glow absolute left-1/2 bottom-0 -translate-x-1/2 w-[85%]"
-          style={{
-            top: `${glowTop}%`,
-            background:
-              'radial-gradient(70% 55% at 50% 0%, rgba(255,106,26,0.9) 0%, rgba(255,106,26,0.32) 50%, transparent 80%)',
-          }}
-          aria-hidden="true"
-        />
-        <span className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink/60 to-transparent" aria-hidden="true" />
-        {/*
-          Spotlight cone + pool of light, painted OVER the photo. They
-          were behind it before, so on the live site — where the photos
-          are opaque — they were completely hidden and the wall read as
-          flat black. The cone falls from above onto the shoe; the pool
-          sits high, as wall light, so it never washes the shoe itself.
-        */}
-        <span
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(60% 45% at 50% 28%, rgba(242,237,227,0.10) 0%, transparent 72%)' }}
-          aria-hidden="true"
-        />
-        <span
-          className="absolute inset-x-0 top-0 bottom-0 pointer-events-none"
-          style={{
-            background: 'linear-gradient(180deg, rgba(242,237,227,0.42) 0%, rgba(242,237,227,0.14) 45%, transparent 85%)',
-            clipPath: 'polygon(30% 0, 70% 0, 100% 100%, 0 100%)',
-          }}
-          aria-hidden="true"
-        />
-      </span>
-      {/* The glass shelf the shoe sits on — a ledge with a bright lit
-          front edge, a translucent body, a drop shadow and a faint
-          reflection below, like the video. */}
-      <span
-        className="relative block mx-auto w-[88%] h-[9px] rounded-[1px]"
+      <div
         style={{
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.35) 22%, rgba(255,255,255,0.10) 100%)',
-          boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.9), 0 14px 26px rgba(0,0,0,0.85), 0 2px 6px rgba(0,0,0,0.6)',
+          opacity: tileOpacity,
+          filter: `blur(${tileBlur}px)`,
+          transition: 'opacity 1.1s cubic-bezier(0.65,0,0.25,1), filter 1.1s cubic-bezier(0.65,0,0.25,1)',
         }}
-        aria-hidden="true"
-      />
-      <span
-        className="relative block mx-auto w-[88%] h-[10px] pointer-events-none"
-        style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.14) 0%, transparent 100%)' }}
-        aria-hidden="true"
-      />
+      >
+        {/* Shoe. The wrapper is 3:2 and the image is 1200×800 (3:2), so
+            it fills exactly; the sole is at the image bottom edge, which
+            sits directly on the shelf top below. Lifts 3–4px on hover
+            (only while unzoomed). */}
+        <div
+          ref={(el) => registerShoeRef(product.slug, el)}
+          className="relative mx-auto aspect-[3/2] w-[98%] transition-transform duration-150 ease-out"
+          style={{ transform: !isZoomed && lit ? 'translateY(-4px)' : 'translateY(0)' }}
+        >
+          <img
+            src={imgSrc(product.image)}
+            alt={`${product.code} — ${product.colour} shoe`}
+            loading={index < 5 ? 'eager' : 'lazy'}
+            className="shoe-img absolute inset-0 h-full w-full object-contain"
+          />
+          {/* Tiny soft contact shadow only. */}
+          <span className="contact-shadow pointer-events-none absolute -bottom-1 left-1/2 h-3 w-3/4 -translate-x-1/2" aria-hidden="true" />
+        </div>
+
+        {/* Glass shelf + trailing orange glow. The glow sits on the shelf
+            (line at the shelf top + blurred ellipse), never over the shoe. */}
+        <div className={`relative mx-auto w-[92%] ${glowStrong ? 'glow-strong' : ''}`}>
+          <div className="shelf-bar relative" aria-hidden="true" />
+          <div className="shelf-reflection relative" aria-hidden="true" />
+          <div
+            data-testid="shelf-glow"
+            className="pointer-events-none absolute inset-x-0 top-0"
+            style={{
+              opacity: lit || glowStrong ? 1 : 0,
+              transitionProperty: 'opacity',
+              transitionDuration: lit ? '0.15s' : '0.9s',
+              transitionTimingFunction: 'ease-out',
+            }}
+            aria-hidden="true"
+          >
+            <div className="glow-line absolute top-0 left-1/2 h-[2px] w-[100%] -translate-x-1/2" />
+            <div className="glow-ellipse absolute top-[2px] left-1/2 h-[20px] w-[110%] -translate-x-1/2" />
+          </div>
+        </div>
+      </div>
       <span className="sr-only">{product.code}</span>
     </button>
   );
 }
 
-export default function ProductGrid() {
-  const wallRef = useRef(null);
-  const driftRef = useRef(null);
+export default function ProductGrid({ activeSlug, isZoomed, isDetailOpen, onSelect, registerShoeRef, wallRef, wallTransform, wallOrigin, snap }) {
+  const activeIndex = products.findIndex((p) => p.slug === activeSlug);
 
-  useEffect(() => {
-    const wall = wallRef.current;
-    if (!wall) return;
-    if (prefersReducedMotion()) return;
-    // Entrance: the shoes rise onto their shelves, one after another.
-    const intro = gsap.from(wall.querySelectorAll('.showcase-cell'), {
-      y: 28, opacity: 0, duration: 0.8, ease: 'power3.out', stagger: 0.05, delay: 0.1,
-    });
-    // Slow drift across the wall, like the video's slow camera move.
-    const drift = driftRef.current
-      ? gsap.to(driftRef.current, { scale: 1.06, duration: 24, ease: 'sine.inOut', yoyo: true, repeat: -1 })
-      : null;
-    return () => {
-      intro.kill();
-      drift?.kill();
-    };
-  }, []);
+  const { scale, x, y } = wallTransform || { scale: 1, x: 0, y: 0 };
 
   return (
-    <section id="collection" ref={wallRef} className="relative overflow-hidden" aria-label="The collection">
-      {/* Dark gallery wall. */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'linear-gradient(180deg, #17171a 0%, #0b0b0c 70%, #0b0b0c 100%)' }}
-        aria-hidden="true"
-      />
-      <div className="relative max-w-[1440px] mx-auto px-5 md:px-8 pt-8 md:pt-12 pb-8 md:pb-10 flex flex-col min-h-[calc(100vh-65px)]">
-        <div>
-          <p className="eyebrow text-cream-dim mb-2">Footwear / {brand.series}</p>
-          <h1 className="font-display font-black tracking-tight leading-[0.95] text-4xl md:text-6xl">
-            {brand.tagline}
-          </h1>
-        </div>
-
-        <div ref={driftRef} className="flex-1 flex items-center will-change-transform py-8 md:py-10">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-12 w-full">
-            {products.map((p, i) => (
-              <ShelfShoe key={p.slug} product={p} index={i} eager={i < 5} />
+    <section
+      id="collection"
+      ref={wallRef}
+      className="wall relative overflow-hidden"
+      style={{
+        transform: `translate(${x}px, ${y}px) scale(${scale})`,
+        transformOrigin: wallOrigin || '50% 50%',
+        transition: snap ? 'none' : 'transform 1.1s cubic-bezier(0.65,0,0.25,1)',
+        willChange: 'transform',
+      }}
+      aria-label="The collection"
+    >
+      <div className="relative mx-auto flex min-h-[calc(100vh-64px)] w-[90vw] max-w-[1440px] flex-col px-4 pt-20 md:min-h-[calc(100vh-72px)]">
+        {/* 5 soft diffused beams (one per column) + light pools, behind
+            the shoes. Hidden below md (the grid is 2-col there). */}
+        <div className="pointer-events-none absolute inset-x-4 top-0 hidden h-full md:block" aria-hidden="true">
+          <div className="grid h-full grid-cols-5 gap-x-4">
+            {[0, 1, 2, 3, 4].map((col) => (
+              <div key={col} className="beam-breathe relative h-full" style={{ animationDelay: `${col * 0.5}s` }}>
+                <div className="spotlight-pool absolute -top-10 left-1/2 h-[90px] w-[130%] -translate-x-1/2" />
+                <div className="spotlight-beam absolute top-0 left-1/2 h-[72%] w-[110%] -translate-x-1/2" />
+              </div>
             ))}
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+        {/* Eyebrow + heading, left-aligned with the grid, close above
+            row 1. Fades out as soon as a product opens (isDetailOpen),
+            not only once the wall scale passes 1 — so the detail title
+            never overlaps it, even if the zoom is still starting. */}
+        <div
+          className="relative z-10 mb-6"
+          style={{
+            opacity: isDetailOpen ? 0 : 1,
+            transition: 'opacity 0.5s ease',
+          }}
+        >
+          <p className="mb-3 text-[10px] font-semibold tracking-[0.24em] text-cream-dim uppercase">
+            Footwear&nbsp;&nbsp;/&nbsp;&nbsp;{brand.series}
+          </p>
+          <h1 className="text-[30px] leading-tight font-medium tracking-tight text-cream">
+            {brand.tagline}
+          </h1>
+        </div>
+
+        {/* Compact grid: 5 columns, ~16px gap, 2 rows, vertically
+            centered in the space below the heading, no large void. */}
+        <div className="relative z-10 flex flex-1 flex-col justify-center pb-8">
+          <div className="grid w-full grid-cols-2 gap-x-4 gap-y-4 md:grid-cols-3 lg:grid-cols-5">
+            {products.map((p, i) => {
+              const isNeighbour =
+                activeIndex !== -1 &&
+                (i === (activeIndex - 1 + products.length) % products.length ||
+                  i === (activeIndex + 1) % products.length);
+              return (
+                <ShelfShoe
+                  key={p.slug}
+                  product={p}
+                  index={i}
+                  activeSlug={activeSlug}
+                  isNeighbour={isNeighbour}
+                  isZoomed={isZoomed}
+                  onSelect={onSelect}
+                  registerShoeRef={registerShoeRef}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom bar: series + the invite line from the video. Fades
+            out as soon as a product opens (it is not part of the detail
+            view). */}
+        <div
+          className="relative z-10 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-5 pb-8 sm:flex-row sm:items-center"
+          style={{
+            opacity: isDetailOpen ? 0 : 1,
+            transition: 'opacity 0.5s ease',
+          }}
+        >
           <p className="eyebrow text-cream">{brand.series} / {brand.seriesNote}</p>
           <p className="text-cream-dim">Explore the collection. Select a silhouette.</p>
         </div>
